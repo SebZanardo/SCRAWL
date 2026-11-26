@@ -8,7 +8,7 @@ int main(void) {
     static GlyphAtlas glyph_atlas = {0};
     static GlyphScratches glyph_scratches = {0};
 
-    ScrawlLoad(&glyph_atlas, "data/scrawl/font.scrawl");
+    ScrawlLoad(&glyph_atlas, "src/data/scrawl/font.scrawl");
 
     // Cache scratches
     Vector2 cursor = {200.0f, 200.0f};
