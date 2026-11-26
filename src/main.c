@@ -4,7 +4,7 @@
 int main(void) {
     InitWindow(800, 800, "SCRAWL");
 
-    GlyphMap glyph_map = {0};
+    GlyphAtlas glyph_atlas = {0};
     GlyphScratches glyph_scratches = {0};
 
     // NOTE: Temporary until file loading
@@ -17,15 +17,25 @@ int main(void) {
     IntVector2 edges[16] = {
         {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}
     };
-    Glyph *glyph = GlyphAdd(&glyph_map, verts, edges, num_verts, num_edges);
+    Glyph* glyph = GlyphAtlasAdd(
+        &glyph_atlas, verts, edges, num_verts, num_edges
+    );
 
     // Cache scratches
     Vector2 cursor = {100.0f, 100.0f};
-    GlyphAddScratch(&glyph_scratches, glyph, &cursor);
-    GlyphAddScratch(&glyph_scratches, glyph, &cursor);
-    GlyphAddScratch(&glyph_scratches, glyph, &cursor);
-    GlyphAddScratch(&glyph_scratches, glyph, &cursor);
-    GlyphAddScratch(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
 
     while (!WindowShouldClose()) {
         BeginDrawing();

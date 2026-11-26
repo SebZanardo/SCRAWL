@@ -138,6 +138,10 @@ f32 RandomF32(void) {
     return (f32)RandomU32() / (f32)MAX_U32;
 }
 
+f32 RandomSignedF32() {
+    return RandomF32() * 2.0f - 1.0f;
+}
+
 static f32 RandomNorm(void) {
     f32 u1 = 0.0f;
     do { u1 = RandomF32(); } while (u1 == 0.0f);
@@ -187,6 +191,10 @@ u32 RNGRandomU32(RNG* rng) {
 
 f32 RNGRandomF32(RNG* rng) {
     return (f32)RNGRandomU32(rng) / (f32)MAX_U32;
+}
+
+f32 RNGRandomSignedF32(RNG* rng) {
+    return RNGRandomF32(rng) * 2.0f - 1.0f;
 }
 
 static f32 RNGRandomNorm(RNG* rng) {

@@ -157,12 +157,14 @@ extern RNG global_rng;
 void RandomSetSeed(u64 initstate, u64 initseq);
 u32 RandomU32(void);
 f32 RandomF32(void);
+f32 RandomSignedF32();
 f32 RandomNormBetween(f32 min, f32 max);
 Vector2 RandomCircle(f32 radius);
 
 void RNGRandomSetSeed(RNG* rng, u64 initstate, u64 initseq);
 u32 RNGRandomU32(RNG* rng);
 f32 RNGRandomF32(RNG* rng);
+f32 RNGRandomSignedF32(RNG* rng);
 f32 RNGRandomNormBetween(RNG* rng, f32 min, f32 max);
 Vector2 RNGRandomCircle(RNG* rng, f32 radius);
 

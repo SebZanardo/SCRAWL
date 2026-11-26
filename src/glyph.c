@@ -1,76 +1,84 @@
 #include "glyph.h"
 
-Glyph *GlyphAdd(
-    GlyphMap *glyph_map,
-    Vector2 *verts,
-    IntVector2 *edges,
+Glyph* GlyphAtlasAdd(
+    GlyphAtlas* atlas,
+    Vector2* verts,
+    IntVector2* edges,
     i32 num_verts,
     i32 num_edges
 ) {
     // Invalid
     if (
-        glyph_map->num_glyphs >= GLYPH_MAX_GLYPHS ||
-        glyph_map->num_verts + num_verts >= GLYPH_MAX_VERTS ||
-        glyph_map->num_edges + num_edges >= GLYPH_MAX_EDGES
+        atlas->num_glyphs >= GLYPH_ATLAS_GLYPHS_LEN ||
+        atlas->num_verts + num_verts >= GLYPH_ATLAS_VERTS_LEN ||
+        atlas->num_edges + num_edges >= GLYPH_ATLAS_EDGES_LEN ||
+        num_verts > GLYPH_MAX_VERTS ||
+        num_edges > GLYPH_MAX_EDGES
     ) {
         return NULL;
     }
 
     // Add glyph
-    Glyph *glyph = &glyph_map->glyphs[glyph_map->num_glyphs++];
-    glyph->verts = &glyph_map->verts[glyph_map->num_verts];
-    glyph->edges = &glyph_map->edges[glyph_map->num_edges];
+    Glyph* glyph = &atlas->glyphs[atlas->num_glyphs++];
+    glyph->verts = &atlas->verts[atlas->num_verts];
+    glyph->edges = &atlas->edges[atlas->num_edges];
     glyph->num_verts = num_verts;
     glyph->num_edges = num_edges;
 
     // Add vertices
     for (i32 i = 0; i < num_verts; i++) {
-        glyph_map->verts[glyph_map->num_verts++] = verts[i];
+        atlas->verts[atlas->num_verts++] = verts[i];
     }
 
     // Add edges
     for (i32 i = 0; i < num_edges; i++) {
-        glyph_map->edges[glyph_map->num_edges++] = edges[i];
+        atlas->edges[atlas->num_edges++] = edges[i];
     }
 
     return glyph;
 }
 
-bool GlyphAddScratch(
-    GlyphScratches *scratches,
-    Glyph *glyph,
-    Vector2 *cursor
+bool GlyphScratchesAdd(
+    GlyphScratches* scratches,
+    Glyph* glyph,
+    Vector2* cursor
 ) {
     // Invalid
-    if (scratches->num_scratches + glyph->num_edges > GLYPH_MAX_SCRATCHES) {
+    if (scratches->num_scratches + glyph->num_edges > GLYPH_SCRATCHES_LEN) {
         return false;
     }
 
-    // Walk vertices & overrun edges
+    static Vector2 verts[GLYPH_MAX_VERTS];
+    for (i32 v = 0; v < glyph->num_verts; v++) {
+        verts[v] = Vector2Add(glyph->verts[v], RandomCircle(GLYPH_VERT_TRAVEL));
+    }
+
+    // Edges rotate around midpoint and overrun vertices
     for (i32 i = 0; i < glyph->num_edges; i++) {
         IntVector2 edge = glyph->edges[i];
+        Vector2 a = verts[edge.x];
+        Vector2 b = verts[edge.y];
 
-        Vector2 a_walk = RandomCircle(GLYPH_VERT_TRAVEL);
-        Vector2 a = Vector2Add(glyph->verts[edge.x], a_walk);
-
-        Vector2 b_walk = RandomCircle(GLYPH_VERT_TRAVEL);
-        Vector2 b = Vector2Add(glyph->verts[edge.y], b_walk);
+        Vector2 mid = Vector2Scale(Vector2Add(a, b), 0.5f);
+        f32 rot = GLYPH_EDGE_ROT * RandomSignedF32();
+        a = Vector2Add(mid, Vector2Rotate(Vector2Subtract(a, mid), rot));
+        b = Vector2Add(mid, Vector2Rotate(Vector2Subtract(b, mid), rot));
 
         Vector2 diff = Vector2Subtract(b, a);
 
         f32 a_overrun = -(RandomF32() * GLYPH_OVERRUN);
         f32 b_overrun = RandomF32() * GLYPH_OVERRUN;
 
-        Vector2 *start = &scratches->start[scratches->num_scratches + i];
-        *start = Vector2Add(a, Vector2Scale(diff, a_overrun));
+        a = Vector2Add(a, Vector2Scale(diff, a_overrun));
+        b = Vector2Add(b, Vector2Scale(diff, b_overrun));
 
-        Vector2 *end = &scratches->end[scratches->num_scratches + i];
-        *end = Vector2Add(b, Vector2Scale(diff, b_overrun));
+        scratches->start[scratches->num_scratches + i] = a;
+        scratches->end[scratches->num_scratches + i] = b;
     }
 
     // Scale and offset
     for (i32 i = 0; i < glyph->num_edges; i++) {
-        Vector2 *start = &scratches->start[scratches->num_scratches + i];
+        Vector2* start = &scratches->start[scratches->num_scratches + i];
         *start = Vector2Scale(*start, GLYPH_SIZE);
         *start = Vector2Add(*start, *cursor);
 
