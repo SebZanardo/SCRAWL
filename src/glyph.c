@@ -10,8 +10,8 @@ Glyph* GlyphAtlasAdd(
     // Invalid
     if (
         atlas->num_glyphs >= GLYPH_ATLAS_GLYPHS_LEN ||
-        atlas->num_verts + num_verts >= GLYPH_ATLAS_VERTS_LEN ||
-        atlas->num_edges + num_edges >= GLYPH_ATLAS_EDGES_LEN ||
+        atlas->num_verts + num_verts > GLYPH_ATLAS_VERTS_LEN ||
+        atlas->num_edges + num_edges > GLYPH_ATLAS_EDGES_LEN ||
         num_verts > GLYPH_MAX_VERTS ||
         num_edges > GLYPH_MAX_EDGES
     ) {

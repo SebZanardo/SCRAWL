@@ -4,8 +4,8 @@
 int main(void) {
     InitWindow(800, 800, "SCRAWL");
 
-    GlyphAtlas glyph_atlas = {0};
-    GlyphScratches glyph_scratches = {0};
+    static GlyphAtlas glyph_atlas = {0};
+    static GlyphScratches glyph_scratches = {0};
 
     // NOTE: Temporary until file loading
     i32 num_verts = 6;

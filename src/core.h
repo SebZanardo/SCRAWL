@@ -111,7 +111,7 @@ typedef struct {
     u64 base_next;
 } Arena;
 
-extern Arena *global_arena;
+extern Arena* global_arena;
 
 Arena* ArenaCreate(u64 reserve_size, u64 commit_size);
 void ArenaDestroy(Arena* arena);
