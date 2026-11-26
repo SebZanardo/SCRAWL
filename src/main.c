@@ -1,5 +1,6 @@
 #include "core.c"
 #include "glyph.c"
+#include "scrawl.c"
 
 int main(void) {
     InitWindow(800, 800, "SCRAWL");
@@ -7,35 +8,19 @@ int main(void) {
     static GlyphAtlas glyph_atlas = {0};
     static GlyphScratches glyph_scratches = {0};
 
-    // NOTE: Temporary until file loading
-    i32 num_verts = 6;
-    i32 num_edges = 5;
-    Vector2 verts[16] = {
-        {0.7f, 0.2f}, {0.5f, 0.1f}, {0.3f, 0.2f},
-        {0.7f, 0.8f}, {0.5f, 0.9f}, {0.3f, 0.8f}
-    };
-    IntVector2 edges[16] = {
-        {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}
-    };
-    Glyph* glyph = GlyphAtlasAdd(
-        &glyph_atlas, verts, edges, num_verts, num_edges
-    );
+    ScrawlLoad(&glyph_atlas, "data/scrawl/font.scrawl");
 
     // Cache scratches
-    Vector2 cursor = {100.0f, 100.0f};
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
-    GlyphScratchesAdd(&glyph_scratches, glyph, &cursor);
+    Vector2 cursor = {200.0f, 200.0f};
+    GlyphScratchesAddString(
+        &glyph_scratches,
+        &glyph_atlas,
+        "ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n"
+        "abcdefghijklm\nnopqrstuvwxyz\n"
+        "0123456789\n"
+        "!\"#$%&'()*+,-./:;\n<=>?@[\\]^_`{|}~",
+        &cursor
+    );
 
     while (!WindowShouldClose()) {
         BeginDrawing();
